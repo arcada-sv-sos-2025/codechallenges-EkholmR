@@ -3,73 +3,56 @@ package fi.arcada.codechallenge;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.viewpager2.widget.ViewPager2;
-
-import java.util.ArrayList;
+import java.util.Arrays;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView View1;
-
-    TextView View2;
-
-    Button calc;
-
-
-    ArrayList<Double> numbers = new ArrayList<>();
-
+    EditText inputValues, inputWindowSize;
+    Button btnCalculate;
+    TextView outputResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        View1 = (TextView) findViewById(R.id.View1);
+        inputValues = findViewById(R.id.inputValues);
+        inputWindowSize = findViewById(R.id.inputWindowSize);
+        btnCalculate = findViewById(R.id.btnCalculate);
+        outputResult = findViewById(R.id.outputResult);
 
-        View1.setText("CodeChallenge2");
-
-        View2 = (TextView) findViewById(R.id.View2);
-
-        View2.setText("Appen funkar fint");
-
-        calc = (Button) findViewById(R.id.calc);
-        calc.setOnClickListener( v ->   calculate());
-
-        numbers.add(0.0);
-        numbers.add(1.0);
-        numbers.add(2.0);
-        numbers.add(3.0);
-        numbers.add(3.0);
-        numbers.add(5.0);
-        numbers.add(6.0);
-        numbers.add(7.0);
-        numbers.add(8.0);
-        numbers.add(9.0);
+        btnCalculate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculateSMA();
+            }
+        });
     }
 
+    private void calculateSMA() {
+        try {
+            String[] valueStrings = inputValues.getText().toString().split(",");
+            double[] values = new double[valueStrings.length];
+            for (int i = 0; i < valueStrings.length; i++) {
+                values[i] = Double.parseDouble(valueStrings[i].trim());
+            }
 
-public void calculate(){
+            int windowSize = Integer.parseInt(inputWindowSize.getText().toString());
+            double[] sma = movingAvg.calculateSMA(values, windowSize);
 
-        int sum = 0;
-        for(int i = 0; i <numbers.size(); i++) {
-            sum += numbers.get(i);
+            outputResult.setText("SMA: " + Arrays.toString(sma));
+            Log.d("SMA_RESULT", "SMA: " + Arrays.toString(sma));
+
+        } catch (Exception e) {
+            outputResult.setText("Fel: Kontrollera att inmatningen är korrekt.");
+            Log.e("SMA_ERROR", "Fel vid beräkning", e);
         }
-
-        double average = (double)sum / numbers.size();
-        View2.setText("Median:  "  + average);
-
-
-
-
-
-
-
     }
+
 }
+
+
